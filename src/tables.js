@@ -53,7 +53,7 @@ rules.table = {
     }
 
     // Ensure there are no blank lines
-    content = content.replace('\n\n', '\n')
+    content = content.replace(/\n+/g, '\n')
     return '\n\n' + emptyHeader + content + '\n\n'
   }
 }
