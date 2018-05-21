@@ -99,7 +99,9 @@ function cell (content, node) {
   var index = indexOf.call(node.parentNode.childNodes, node)
   var prefix = ' '
   if (index === 0) prefix = '| '
-  return prefix + content.trim().replace(/[\n\r]/g, "<br>") + ' |'
+  let filteredContent = content.trim().replace(/[\n\r]/g, "<br>");
+  while (filteredContent.length < 3) filteredContent += ' ';
+  return prefix + filteredContent + ' |'
 }
 
 function nodeContainsTable(node) {

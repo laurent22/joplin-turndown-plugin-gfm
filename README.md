@@ -7,6 +7,7 @@ This is a fork of the original [turndown-plugin-gfm](https://github.com/domchris
 - Always render tables even if they don't have a header.
 - Don't render the border of tables that contain other tables (frequent for websites that do the layout using tables). Only render the inner tables, if any, and if they also don't contain other tables.
 - Replace newlines (`\n`) with `<br>` inside table cells so that multi-line content is displayed correctly as Markdown.
+- Table cells are at least three characters long (padded with spaces) so that they render correctly in GFM-compliant renderers.
 
 ## Installation
 
