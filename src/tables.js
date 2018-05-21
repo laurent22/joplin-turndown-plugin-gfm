@@ -5,6 +5,7 @@ var rules = {}
 rules.tableCell = {
   filter: ['th', 'td'],
   replacement: function (content, node) {
+    if (nodeContainsTable(nodeParentTable(node))) return content;
     return cell(content, node)
   }
 }
@@ -12,6 +13,8 @@ rules.tableCell = {
 rules.tableRow = {
   filter: 'tr',
   replacement: function (content, node) {
+    if (nodeContainsTable(nodeParentTable(node))) return content;
+
     var borderCells = ''
     var alignMap = { left: ':--', right: '--:', center: ':-:' }
 
@@ -39,6 +42,8 @@ rules.table = {
   },
 
   replacement: function (content, node) {
+    if (nodeContainsTable(node)) return content;
+
     // If table has no heading, add an empty one so as to get a valid Markdown table
     var firstRow = node.rows.length ? node.rows[0] : null
     var columnCount = firstRow ? firstRow.childNodes.length : 0
@@ -95,6 +100,26 @@ function cell (content, node) {
   var prefix = ' '
   if (index === 0) prefix = '| '
   return prefix + content + ' |'
+}
+
+function nodeContainsTable(node) {
+  if (!node.childNodes) return false;
+
+  for (let i = 0; i < node.childNodes.length; i++) {
+    const child = node.childNodes[i];
+    if (child.nodeName === 'TABLE') return true;
+    if (nodeContainsTable(child)) return true;
+  }
+  return false;
+}
+
+function nodeParentTable(node) {
+  let parent = node.parentNode;
+  while (parent.nodeName !== 'TABLE') {
+    parent = parent.parentNode;
+    if (!parent) return null;
+  }
+  return parent;
 }
 
 export default function tables (turndownService) {
