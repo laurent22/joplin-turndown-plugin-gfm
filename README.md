@@ -4,7 +4,7 @@ A [Turndown](https://github.com/domchristie/turndown) plugin which adds GitHub F
 
 This is a fork of the original [turndown-plugin-gfm](https://github.com/domchristie/turndown-plugin-gfm) for use with [Joplin](https://github.com/laurent22/joplin). The changes are:
 
-- Always render tables even they don't have a header.
+- Always render tables even if they don't have a header.
 - Don't render the border of tables that contain other tables (frequent for websites that do the layout using tables). Only render the inner tables, if any, and if they also don't contain other tables.
 - Replace newlines (`\n`) with `<br>` inside table cells so that multi-line content is displayed correctly as Markdown.
 
