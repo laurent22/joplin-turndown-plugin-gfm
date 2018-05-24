@@ -13,21 +13,26 @@ rules.tableCell = {
 rules.tableRow = {
   filter: 'tr',
   replacement: function (content, node) {
-    if (nodeContainsTable(nodeParentTable(node))) return content;
+    const parentTable = nodeParentTable(node);
+    if (nodeContainsTable(parentTable)) return content;
 
     var borderCells = ''
     var alignMap = { left: ':--', right: '--:', center: ':-:' }
 
     if (isHeadingRow(node)) {
-      for (var i = 0; i < node.childNodes.length; i++) {
+      const colCount = tableColCount(parentTable);
+      for (var i = 0; i < colCount; i++) {
+        const childNode = colCount >= node.childNodes.length ? null : node.childNodes[i];
         var border = '---'
-        var align = (
-          node.childNodes[i].getAttribute('align') || ''
-        ).toLowerCase()
+        var align = childNode ? (childNode.getAttribute('align') || '').toLowerCase() : '';
 
         if (align) border = alignMap[align] || border
 
-        borderCells += cell(border, node.childNodes[i])
+        if (childNode) {
+          borderCells += cell(border, node.childNodes[i])
+        } else {
+          borderCells += cell(border, null, i);
+        }
       }
     }
     return '\n' + content + (borderCells ? '\n' + borderCells : '')
@@ -46,7 +51,7 @@ rules.table = {
 
     // If table has no heading, add an empty one so as to get a valid Markdown table
     var firstRow = node.rows.length ? node.rows[0] : null
-    var columnCount = firstRow ? firstRow.childNodes.length : 0
+    var columnCount = tableColCount(node); //firstRow ? firstRow.childNodes.length : 0
     var emptyHeader = ''
     if (columnCount && !isHeadingRow(firstRow)) {
       emptyHeader = '|' + '     |'.repeat(columnCount) + '\n' + '|' + ' --- |'.repeat(columnCount)
@@ -95,12 +100,13 @@ function isFirstTbody (element) {
   )
 }
 
-function cell (content, node) {
-  var index = indexOf.call(node.parentNode.childNodes, node)
+function cell (content, node = null, index = null) {
+  if (index === null) index = indexOf.call(node.parentNode.childNodes, node)
   var prefix = ' '
   if (index === 0) prefix = '| '
-  let filteredContent = content.trim().replace(/[\n\r]/g, "<br>");
+  let filteredContent = content.trim().replace(/\n\r/g, '<br>').replace(/\n/g, "<br>");
   while (filteredContent.length < 3) filteredContent += ' ';
+  if (node) filteredContent = handleColSpan(filteredContent, node, ' ');
   return prefix + filteredContent + ' |'
 }
 
@@ -122,6 +128,24 @@ function nodeParentTable(node) {
     if (!parent) return null;
   }
   return parent;
+}
+
+function handleColSpan(content, node, emptyChar) {
+  const colspan = node.getAttribute('colspan') || 1;
+  for (let i = 1; i < colspan; i++) {
+    content += ' | ' + emptyChar.repeat(3);
+  }
+  return content
+}
+
+function tableColCount(node) {
+  let maxColCount = 0;
+  for (let i = 0; i < node.rows.length; i++) {
+    const row = node.rows[i]
+    const colCount = row.childNodes.length
+    if (colCount > maxColCount) maxColCount = colCount
+  }
+  return maxColCount
 }
 
 export default function tables (turndownService) {
