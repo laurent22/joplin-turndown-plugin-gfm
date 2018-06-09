@@ -29,7 +29,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/domchristie/turndown-plugin-gfm.git"
+    "url": "https://github.com/laurent22/joplin-turndown-plugin-gfm.git"
   },
   "scripts": {
     "build": "npm run build-cjs && npm run build-es && npm run build-iife",
