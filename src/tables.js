@@ -5,7 +5,7 @@ var rules = {}
 rules.tableCell = {
   filter: ['th', 'td'],
   replacement: function (content, node) {
-    if (nodeContainsTable(nodeParentTable(node))) return content;
+    if (tableShouldBeSkipped(nodeParentTable(node))) return content;
     return cell(content, node)
   }
 }
@@ -14,7 +14,7 @@ rules.tableRow = {
   filter: 'tr',
   replacement: function (content, node) {
     const parentTable = nodeParentTable(node);
-    if (nodeContainsTable(parentTable)) return content;
+    if (tableShouldBeSkipped(parentTable)) return content;
 
     var borderCells = ''
     var alignMap = { left: ':--', right: '--:', center: ':-:' }
@@ -47,7 +47,7 @@ rules.table = {
   },
 
   replacement: function (content, node) {
-    if (nodeContainsTable(node)) return content;
+    if (tableShouldBeSkipped(node)) return content;
 
     // If table has no heading, add an empty one so as to get a valid Markdown table
     var firstRow = node.rows.length ? node.rows[0] : null
@@ -118,6 +118,16 @@ function nodeContainsTable(node) {
     if (child.nodeName === 'TABLE') return true;
     if (nodeContainsTable(child)) return true;
   }
+  return false;
+}
+
+// Various conditions under which a table should be skipped - i.e. each cell
+// will be rendered one after the other as if they were paragraphs.
+function tableShouldBeSkipped(tableNode) {
+  if (!tableNode) return true;
+  if (!tableNode.rows) return true;
+  if (tableNode.rows.length <= 1 && tableNode.rows[0].childNodes.length <= 1) return true; // Table with only one cell
+  if (nodeContainsTable(tableNode)) return true;
   return false;
 }
 
