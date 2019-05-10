@@ -49,16 +49,20 @@ rules.table = {
   replacement: function (content, node) {
     if (tableShouldBeSkipped(node)) return content;
 
+    // Ensure there are no blank lines
+    content = content.replace(/\n+/g, '\n')
+
     // If table has no heading, add an empty one so as to get a valid Markdown table
-    var firstRow = node.rows.length ? node.rows[0] : null
-    var columnCount = tableColCount(node); //firstRow ? firstRow.childNodes.length : 0
+    var secondLine = content.split('\n');
+    if (secondLine.length >= 2) secondLine = secondLine[1]
+    var secondLineIsDivider = secondLine.indexOf('| ---') === 0
+    
+    var columnCount = tableColCount(node);
     var emptyHeader = ''
-    if (columnCount && !isHeadingRow(firstRow)) {
+    if (columnCount && !secondLineIsDivider) {
       emptyHeader = '|' + '     |'.repeat(columnCount) + '\n' + '|' + ' --- |'.repeat(columnCount)
     }
 
-    // Ensure there are no blank lines
-    content = content.replace(/\n+/g, '\n')
     return '\n\n' + emptyHeader + content + '\n\n'
   }
 }
