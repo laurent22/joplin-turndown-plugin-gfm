@@ -10,6 +10,7 @@ This is a fork of the original [turndown-plugin-gfm](https://github.com/domchris
 - New: Table cells are at least three characters long (padded with spaces) so that they render correctly in GFM-compliant renderers.
 - New: Handle colspan in TD tags
 - Fixed: Ensure there are no blank lines inside tables (due for example to an empty `<tr>` tag)
+- Fixed: Fixed importing tables that contain pipes.
 
 ## Installation
 
