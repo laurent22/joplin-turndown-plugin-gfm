@@ -109,6 +109,7 @@ function cell (content, node = null, index = null) {
   var prefix = ' '
   if (index === 0) prefix = '| '
   let filteredContent = content.trim().replace(/\n\r/g, '<br>').replace(/\n/g, "<br>");
+  filteredContent = filteredContent.replace(/\|+/g, '\\|')
   while (filteredContent.length < 3) filteredContent += ' ';
   if (node) filteredContent = handleColSpan(filteredContent, node, ' ');
   return prefix + filteredContent + ' |'
