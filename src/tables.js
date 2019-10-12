@@ -53,7 +53,7 @@ rules.table = {
     content = content.replace(/\n+/g, '\n')
 
     // If table has no heading, add an empty one so as to get a valid Markdown table
-    var secondLine = content.split('\n');
+    var secondLine = content.trim().split('\n');
     if (secondLine.length >= 2) secondLine = secondLine[1]
     var secondLineIsDivider = secondLine.indexOf('| ---') === 0
     
