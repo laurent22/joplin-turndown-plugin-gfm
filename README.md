@@ -1,5 +1,13 @@
 # turndown-plugin-gfm
 
+* * *
+
+**IMPORTANT: This package is now hosted there: https://github.com/laurent22/joplin/tree/dev/packages/turndown-plugin-gfm**
+
+It can be installed using `npm install --save @joplin/turndown-plugin-gfm`
+
+* * *
+
 A [Turndown](https://github.com/domchristie/turndown) plugin which adds GitHub Flavored Markdown extensions.
 
 This is a fork of the original [turndown-plugin-gfm](https://github.com/domchristie/turndown-plugin-gfm) for use with [Joplin](https://github.com/laurent22/joplin). The changes are:
